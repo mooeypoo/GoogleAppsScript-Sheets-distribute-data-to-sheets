@@ -129,29 +129,19 @@ function copySourceToSheets() {
     cellRange.insertCheckboxes()
 
     // Format content for Status update -- FOR EACH LINE
-    for (let i=1; i<= targetData.length; i++) {
-      const pasteToXCell = targetSheet.getRange(
-        i + 1, // Skip for headers,
-        24, // Col 24 = X (count starts from 1)
-        1, // Num rows
-        1 // Num cols
-      )
-      const readFromSCell = targetSheet.getRange(
-        i + 1, // Skip for headers,
-        19, // Col 19 = S (count starts from 1)
-        1, // Num rows
-        1 // Num cols
-      )
-
-      try {
-        const valueS = readFromSCell.getValues()[0][0]
-        pasteToXCell.setValue(valueS.replaceAll('    ', '\n'))
-        console.log('x cell new value:', pasteToXCell.getValues())
-      } catch(err) {
-        console.log(' Could not format information from Cell S to cell X.')
-      }
-    }
-    // ---------------
+    replaceAndFormatCell(
+      targetSheet,
+      19, // Col 19 = S (count starts from 1)
+      24, // Col 24 = X (count starts from 1)
+      targetData.length // Number of rows to repeat
+    )
+    // Format content for Description -- FOR EACH LINE
+    replaceAndFormatCell(
+      targetSheet,
+      5, // Col 5 = E (count starts from 1)
+      5, // Col 5 = E (count starts from 1)
+      targetData.length // Number of rows to repeat
+    )
 
     // Hide columns
     targetSheet.hideColumns(10, 8) // J - Q
@@ -227,6 +217,42 @@ function processLiveDataToMap(termMap) {
   return valuesRowMap
 }
 
+/**
+ * This takes text from one cell, formats it to replace spaces that Asana produces
+ * with linebreaks for better readability. This repeats for all available rows.
+ * The cell could also be the same cell, replacing its own data.
+ * 
+ * Remember: Cell numbers start from 1.
+ * 
+ * @param Sheet targetSheet The Sheet object to perform this replacement on
+ * @param number fromCellNum The column count for the needed cell to copy info from
+ * @param number fromCellNum The column count for the needed cell to copy info to
+ * @param number rowNumber The total number of rows that this should repeat on
+ */
+function replaceAndFormatCell(targetSheet, fromCellNum, toCellNum, rowNumber) {
+  // Format content for Status update -- FOR EACH LINE
+  for (let i=1; i<= rowNumber; i++) {
+    const pasteToCell = targetSheet.getRange(
+      i + 1, // Skip for headers,
+      toCellNum, // Col number (count starts from 1)
+      1, // Num rows
+      1 // Num cols
+    )
+    const readFromCell = targetSheet.getRange(
+      i + 1, // Skip for headers,
+      fromCellNum, // Col number (count starts from 1)
+      1, // Num rows
+      1 // Num cols
+    )
+
+    try {
+      const value = readFromCell.getValues()[0][0]
+      pasteToCell.setValue(value.replaceAll('    ', '\n'))
+    } catch(err) {
+      console.log(' Could not format information from Cell ' + fromCellNum + ' to cell ' + toCellNum + '.', err)
+    }
+  }
+}
 
 /**
  * Fetch the term definition that maps search terms to sheet names.
