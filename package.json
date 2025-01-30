@@ -1,0 +1,22 @@
+{
+  "name": "gas-distribute-sheets",
+  "version": "1.0.0",
+  "description": "A Google Apps Script that distributes data from a data sheet into other sheets ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mooeypoo/GoogleAppsScript-Sheets-distribute-data-to-sheets.git"
+  },
+  "author": "Moriel Schottlender (mooeypoo)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mooeypoo/GoogleAppsScript-Sheets-distribute-data-to-sheets/issues"
+  },
+  "homepage": "https://github.com/mooeypoo/GoogleAppsScript-Sheets-distribute-data-to-sheets#readme",
+  "dependencies": {
+    "@google/clasp": "^2.5.0"
+  }
+}
