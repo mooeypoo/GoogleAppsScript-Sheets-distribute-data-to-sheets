@@ -20,14 +20,20 @@ const DEFINITION = {
     // 'WE4': 'WE4',
     // 'WE5': 'WE5',
     // 'WE6': 'WE6'
-  }
+  },
+  Cols: [
+    '', // <-- nothing so the count in 'indexOf' can start from 1
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+    'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U' ,'V', 'W','X', 'Y', 'Z',
+    'AA', 'AB', 'AC', 'AD', 'AE'
+  ]
 }
 const activeSpreadsheet = SpreadsheetApp.getActive();
 
 function onOpen() {
   var ui = SpreadsheetApp.getUi();
   // Or DocumentApp or FormApp.
-  ui.createMenu('Distribute Live Data')
+  ui.createMenu('✨ Distribute Live Data ✨')
       .addItem('✈️ Distribute Live Data', 'copySourceToSheets')
       .addSeparator()
       .addItem('🗑️ Delete all unprotected sheets', 'deleteUnprotectedSheets')
@@ -114,11 +120,23 @@ function copySourceToSheets() {
     // Style
     cellRange.setWrapStrategy(SpreadsheetApp.WrapStrategy.WRAP)
     cellRange.setVerticalAlignment('top')
+
     // Insert data
     cellRange.setValues(targetData)
 
-    Logger.log('Formatting columns for sheet', key)
+    // SORT the rows by "Posted on" (col U = ) in descending order
 
+    // First, set the formatting on the "U" column to date so that the
+    // sorting operation understands what it's doing.
+    targetSheet.getRange('U:U').setNumberFormat("MM/DD/YYYY")
+    // Apply sort on the entire range based on the "U" column
+    cellRange.sort({
+      column: DEFINITION.Cols.indexOf('U'),
+      ascending: false
+    })
+    console.log('Sorted data based on Col U(' + DEFINITION.Cols.indexOf('U') + ')')
+
+    Logger.log('Formatting columns for sheet', key)
     // Insert checkbox to column Y
     cellRange = targetSheet.getRange(
       2, // Skip for headers,
